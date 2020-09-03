@@ -1,0 +1,12 @@
+{
+  "title": "Wsky Fast Travel",
+  "type": "ServerContent",
+  "tags": [
+    "fun"
+  ],
+  "ignore": [
+    ".git/*",
+    ".gitattributes",
+    "*.md"
+  ]
+}
