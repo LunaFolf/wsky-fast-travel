@@ -10,7 +10,7 @@ util.AddNetworkString("WskyFastTravel_BeginTransition")
 
 local stops = {}
 
-local existingStops = ents.FindByClass("bus_stop")
+local existingStops = ents.FindByClass("wsky_bus_stop")
 for _, stop in pairs(existingStops) do
   local busStopNumber = table.Count(stops) + 1
   stop:SetNWInt("WskyFastTravel_BusStopNumber", busStopNumber)
@@ -18,12 +18,12 @@ for _, stop in pairs(existingStops) do
 end
 
 function ENT:Initialize()
-  self:SetModel("models/props_street/bus_stop.mdl")
+  self:SetModel("models/wsky_bus_stop/wsky_bus_stop.mdl")
   self:PhysicsInit(SOLID_VPHYSICS)
   self:SetMoveType(MOVETYPE_VPHYSICS)
   self:SetSolid(SOLID_VPHYSICS)
   self:SetUseType(SIMPLE_USE)
-  self:SetAngles(self:GetAngles() + Angle(0,90,0))
+  -- self:SetAngles(self:GetAngles() + Angle(0,90,0))
 
   local phys = self:GetPhysicsObject()
   if (phys:IsValid()) then phys:Wake() end
@@ -54,13 +54,15 @@ function travel(ply, currentStop, newStop)
 
   local transitionDuration = 3
 
+  local heightOffset = Vector(0, 0, -65)
+
   -- Freeze user in place
   ply:SetNWBool("WskyFastTravel_HideViewModel", true)
   ply:SetMoveType(MOVETYPE_NONE)
   -- ply:SetPos(currentStop:GetPos() + Vector(150,0,50))
-  ply:SetPos(currentStop:GetPos())
+  ply:SetPos(currentStop:GetPos() + heightOffset + (currentStop:GetAngles():Forward() * 20))
   -- ply:SetEyeAngles(currentStop:GetAngles() + Angle((ply:GetPos()[1] - currentStop:GetPos()[1]) / 10,90,0))
-  ply:SetEyeAngles(currentStop:GetAngles() + Angle(0,-90,0))
+  ply:SetEyeAngles(currentStop:GetAngles())
   ply:Freeze(true)
 
   -- Animate bus sliding in for departure
@@ -75,8 +77,8 @@ function travel(ply, currentStop, newStop)
   -- Arrive at the new bus stop and unfreeze
   timer.Simple(transitionDuration, function ()
     ply:Freeze(false)
-    ply:SetPos(newStop:GetPos())
-    ply:SetEyeAngles(newStop:GetAngles() + Angle(0,-90,0))
+    ply:SetPos(newStop:GetPos() + heightOffset + (newStop:GetAngles():Forward() * 20))
+    ply:SetEyeAngles(newStop:GetAngles())
     timer.Simple(1, function ()
       ply:SetNWBool("WskyFastTravel_HideViewModel", false)
       ply:SetMoveType(MOVETYPE_WALK)

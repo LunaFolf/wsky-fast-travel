@@ -13,7 +13,8 @@ function ENT:Draw()
   local ang = self:GetAngles()
 
   ang:RotateAroundAxis(self:GetAngles():Forward(), 90)
-  pos:Add(Vector(0, 0, 70))
+  ang:RotateAroundAxis(self:GetAngles():Up(), 90)
+  pos:Add(self:GetAngles():Right() * 20)
   cam.Start3D2D(pos, ang, 0.5)
 
     surface.SetFont("DermaLarge")
@@ -48,7 +49,7 @@ local padding = 8
 local titleBarHeight = 32
 
 function getStops(removeCurrentStop, currentStopID)
-  local stops = ents.FindByClass("bus_stop")
+  local stops = ents.FindByClass("wsky_bus_stop")
   local output = {}
   for _, stop in pairs(stops) do
     stop.BusStopNumber = stop:GetNWInt("WskyFastTravel_BusStopNumber")
